@@ -13,7 +13,7 @@
 
     <!-- Disable tap highlight on IE -->
     <meta name="msapplication-tap-highlight" content="no">
-    <link rel="stylesheet" href="./assets/css/works-Style.css"> 
+    <link rel="stylesheet" href="./css/works-Style.css">
     <link href="./main.3f6952e4.css" rel="stylesheet">
   </head>
 
@@ -36,7 +36,7 @@
           <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav ">
               <li><a href="./index.html" title="">Inicio</a></li>
-              <li><a href="./works.html" title="">Proyectos</a></li>
+              <li><a href="./works.php" title="">Proyectos</a></li>
               <li><a href="./about.html" title="">Sobre mí</a></li>
               <li><a href="./contact.html" title="">Contacto</a></li>
             </ul>
@@ -59,15 +59,39 @@
           <div class="col-md-12">
             <div class="gallery">
               <div class="row">
-                <div class="col-sm-4 main-image">
-                  <img src="./assets/images/work01-hover.png" alt="" class="img-responsive">
-                  <div class="text-center mt-3 full-width-title"> <!-- Centrar el botón y agregar margen superior -->
-                    <h1 class="h3">Graficadora</h1>
-                  </div>
-                  <div class="text-center mt-3"> <!-- Centrar el botón y agregar margen superior -->
-                      <a href="./work.html" title="" class="btn btn-default full-width">Ver más</a>
-                  </div>
-                </div>
+
+                <!--Aqui se agregan los proyectos de la base de datos-->
+                <?php
+                  require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
+                  try {
+                    $pdo = obtenerConexion(); // Llama a la función que devuelve la conexión
+                
+                    // Realiza la consulta
+                    $stmt = $pdo->query("SELECT * FROM proyectos");
+                
+                    // Obtiene los resultados
+                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                    // Muestra los resultados en HTML
+                    foreach ($results as $row) {
+                      echo '<div class="col-sm-4 main-image">
+                      <div class="image-container">
+                        <img src="./assets/images/'.$row['portada'].'" alt="" class="img-responsive img-size">
+                      </div>
+                      <div class="text-center mt-3 full-width-title">
+                        <h1 class="h3">' . $row['nombre'] . '</h1>
+                      </div>
+                      <div class="text-center mt-3">
+                        <a href="./work.php" title="" class="btn btn-default full-width">Ver más</a>
+                      </div>
+                    </div>
+                    ';
+                    }
+                  } catch (PDOException $e) {
+                      die("Error de conexión: " . $e->getMessage());
+                  }
+                ?>
+
               </div>
             </div>
           </div>

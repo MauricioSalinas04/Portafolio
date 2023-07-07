@@ -11,9 +11,7 @@
     <!-- Disable tap highlight on IE -->
     <meta name="msapplication-tap-highlight" content="no">
 
-    <link rel="stylesheet" href="./assets/css/work-Style.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-icon-180x180.png">
-    <link href="./assets/favicon.ico" rel="icon">
+    <link rel="stylesheet" href="./css/work-Style.css">
     <link href="./main.3f6952e4.css" rel="stylesheet">
 
     <title>Portafolio</title> 
@@ -40,7 +38,7 @@
           <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav ">
               <li><a href="./index.html" title="">Inicio</a></li>
-              <li><a href="./works.html" title="">Proyectos</a></li>
+              <li><a href="./works.php" title="">Proyectos</a></li>
               <li><a href="./about.html" title="">Sobre mí</a></li>
               <li><a href="./contact.html" title="">Contacto</a></li>
             </ul>
@@ -53,15 +51,36 @@
       <div class="container">
         <div class="row">
 
-          <div class="col-sm-8 col-sm-offset-2 section-container-spacer text-center full-width">
-            <h1 class="h2">Graficadora</h1>
-            <br>
-            <br>
-            <hr>
-            <h1 class="h3">Acerca del proyecto</h1>
-            <hr>
-            <p class="text-justify">Nulla facilisi. Vivamus vestibulum, elit in scelerisque ultricies, nisl nunc pulvinar ligula, id sodales arcu sapien in nisi. Quisque libero enim, mattis non augue posuere, venenatis dapibus urna. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aliquam, similique sed, nobis libero fugiat eius id delectus molestiae vitae eaque, tempora eveniet nisi error doloribus animi! Impedit ratione commodi fugit? Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis, necessitatibus. Exercitationem asperiores accusantium, libero minima dolorem animi architecto, nisi ea tenetur temporibus aliquid possimus consectetur, similique aperiam beatae necessitatibus aliquam.</p>
-          </div>
+          <!--Aqui se agregan los proyectos de la base de datos-->
+          <?php
+            require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
+            try {
+              $pdo = obtenerConexion(); // Llama a la función que devuelve la conexión
+          
+              // Realiza la consulta
+              $stmt = $pdo->query("SELECT * FROM proyectos WHERE id = 15");
+          
+              // Obtiene los resultados
+              $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+          
+              // Muestra los resultados en HTML
+              foreach ($results as $row) {
+                echo 
+                '<div class="col-sm-8 col-sm-offset-2 section-container-spacer text-center full-width">
+                <h1 class="h2">'.$row['nombre'].'</h1>
+                <br>
+                <br>
+                <hr>
+                <h1 class="h3">Acerca del proyecto</h1>
+                <hr>
+                <p class="text-justify">'.$row['descripcion'].'</p>
+              </div>
+              ';
+              }
+            } catch (PDOException $e) {
+                die("Error de conexión: " . $e->getMessage());
+            }
+          ?>
 
           <div class="col-sm-8 col-sm-offset-2 section-container-spacer  full-width">
             <h1 class="h3">Tecnologías</h1>

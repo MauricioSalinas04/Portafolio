@@ -1,0 +1,20 @@
+<div class="col-sm-4 main-image">
+                      <div class="image-container" style="position: relative;
+                      width: 100%;
+                      height: 0;
+                      padding-bottom: 75%; /* Establece la relación de aspecto deseada (por ejemplo, 4:3) */
+                      overflow: hidden;">
+                        <img src="./assets/images/'.$row['portada'].'" alt="" class="img-responsive img-size" style="position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;">
+                      </div>
+                      <div class="text-center mt-3 full-width-title">
+                        <h1 class="h3">' . $row['nombre'] . '</h1>
+                      </div>
+                      <div class="text-center mt-3">
+                        <a href="./work.html" title="" class="btn btn-default full-width">Ver más</a>
+                      </div>
+                    </div>
