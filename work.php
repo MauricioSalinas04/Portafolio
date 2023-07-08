@@ -1,3 +1,8 @@
+<?php 
+  require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
+  $pdo = obtenerConexion(); // Obtener conexion con servidor 
+?>
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -51,66 +56,131 @@
       <div class="container">
         <div class="row">
 
-          <!--Aqui se agregan los proyectos de la base de datos-->
+          <!--Aqui se agrega la informacion del proyecto seleccionado-->
           <?php
-            require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
             try {
-              $pdo = obtenerConexion(); // Llama a la función que devuelve la conexión
-          
-              // Realiza la consulta
-              $stmt = $pdo->query("SELECT * FROM proyectos WHERE id = 15");
-          
-              // Obtiene los resultados
-              $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-          
-              // Muestra los resultados en HTML
-              foreach ($results as $row) {
+              //Realizar consulta a tabla PROYECTOS
+              $stmt = $pdo->query("SELECT * FROM proyectos WHERE id = 15");                         //
+              $results = $stmt->fetch(PDO::FETCH_ASSOC); // Obtiene los resultados
+            
+              // Verifica si se encontraron resultados
+              if ($results) {
+                
+                //Obtiene datos del registro
+                $nombre = $results['nombre'];
+                $descripcion = $results['descripcion'];
+                $repo = $results['repositorio'];
+
+                //Imprime Titulo y Descripcion
                 echo 
                 '<div class="col-sm-8 col-sm-offset-2 section-container-spacer text-center full-width">
-                <h1 class="h2">'.$row['nombre'].'</h1>
-                <br>
-                <br>
-                <hr>
-                <h1 class="h3">Acerca del proyecto</h1>
-                <hr>
-                <p class="text-justify">'.$row['descripcion'].'</p>
+                  <h1 class="h2">'.$nombre.'</h1>
+                  <br>
+                  <br>
+                  <hr>
+                  <h1 class="h3">Acerca del proyecto</h1>
+                  <hr>
+                  <p class="text-justify">'.$descripcion.'</p>
+                </div>
+                ';
+              } else {
+                // No se encontraron resultados
+                echo "No se encontraron resultados.";
+                return;
+              }
+
+              // Realiza consulta con intermediario
+              $stmt = $pdo->query("SELECT * FROM proyectos_tecnologias WHERE proyecto_id = 15");                            //
+              $results = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtiene los resultados
+
+              echo '
+              <div class="col-sm-8 col-sm-offset-2 section-container-spacer  full-width">
+              <h1 class="h3">Tecnologías</h1>
+              <div class="row">';
+            
+              // Almacena los resultados en HTML en una variable
+              $html = '';
+              foreach ($results as $row) {
+                $tecnologia = $row['tecnologia_id'];
+                // Realiza consulta para obtener la ruta del icono en base a la información dada por el intermediario
+                $stmtTecnologias = $pdo->query("SELECT * FROM tecnologias WHERE id = $tecnologia");
+                $resultsTecnologias = $stmtTecnologias->fetch(PDO::FETCH_ASSOC); // Obtiene los resultados
+              
+                // Verifica si se encontraron resultados
+                if ($resultsTecnologias && $stmtTecnologias->rowCount() > 0) {
+                  // Obtiene ruta
+                  $rutaIcono = $resultsTecnologias['ruta'];
+                
+                  $html .= '
+                    <div class="col-xs-2 col-md-1"> <!-- Cambiando el tamaño de la columna a col-md-4 -->
+                      <img src="./assets/images/tecnologias/'.$rutaIcono.'" class="img-responsive" alt="">
+                    </div>';
+                }
+              }
+
+              // Verifica si se encontraron tecnologias y muestra el mensaje en caso contrario
+              if (empty($html)) {
+                $html = '
+                  <div class="col-xs-6 col-md-6"> <!-- Cambiando el tamaño de la columna a col-md-4 -->
+                    <h1 class="h4">No se encontraron tecnologias.</h1>
+                  </div>';
+              }
+
+              // Imprime el contenido HTML
+              echo $html;
+
+              //Continuacion de codigo HTML
+              echo '
               </div>
-              ';
+              <hr>
+              </div>
+
+              <div class="col-xs-12">
+              <h1 class="h3 text-center">Capturas de pantalla</h1>
+              <hr>';
+
+              // Realiza consulta a tabla CAPTURAS
+              $stmt = $pdo->query("SELECT ruta FROM capturas WHERE proyecto_id = 15");                            //
+              $results = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtiene los resultados
+
+              if($results){
+                // Muestra las capturas en HTML
+                foreach ($results as $row) {
+                  $ruta = $row['ruta'];
+                  echo '<img src="./assets/images/capturas/'.$ruta.'" class="img-responsive" alt="">';
+                }
+              }else{
+                echo '<h1 class="h4 text-center">No hay capturas.</h1>';
               }
             } catch (PDOException $e) {
                 die("Error de conexión: " . $e->getMessage());
             }
           ?>
-
-          <div class="col-sm-8 col-sm-offset-2 section-container-spacer  full-width">
-            <h1 class="h3">Tecnologías</h1>
-            <div class="row">
-              <div class="col-xs-2 col-md-1"> <!-- Cambiando el tamaño de la columna a col-md-4 -->
-                <img src="./assets/images/cpp.png" class="img-responsive" alt="">
+            <div class="col-xs-12 text-justify">
+              <h1 class="h3">Repositorio</h1>
+              <div class="row">
+                <?php 
+                  if($repo){
+                    echo 
+                    '<div class="col-xs-2 col-md-1">
+                    <a href="'.$repo.'" target="_blank">
+                    <img src="./assets/images/social.png" class="img-responsive" alt="" style="width:75%; height: auto; margin: 10px 0px;">
+                    </a>
+                    </div>';
+                  }else{
+                    echo 
+                    '<div class="col-xs-6 col-md-6">
+                    <h1 class="h4">No hay repositorio.</h1>
+                    </div>';
+                  } 
+                ?>
               </div>
-              <div class="col-xs-2 col-md-1"> <!-- Agregando otra columna -->
-                <img src="./assets/images/cpp.png" class="img-responsive" alt="">
-              </div>
-              <div class="col-xs-2 col-md-1"> <!-- Cambiando el tamaño de la columna a col-md-4 -->
-                <img src="./assets/images/cpp.png" class="img-responsive" alt="">
-              </div>
-              <div class="col-xs-2 col-md-1"> <!-- Agregando otra columna -->
-                <img src="./assets/images/cpp.png" class="img-responsive" alt="">
-              </div>
+              <hr>
             </div>
-            <hr>
-          </div>
-
-          <div class="col-xs-12 text-center">
-            <h1 class="h3">Capturas de pantalla</h1>
-            <hr>
-            <img src="./assets/images/work001-04.jpg" class="img-responsive" alt="">
-            <img src="./assets/images/work001-04.jpg" class="img-responsive" alt="">
-            <br>
-            <hr>
           </div>
       </div>
     </div>
+
 
     <footer class="footer-container text-center">
       <div class="container">

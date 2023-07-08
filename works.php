@@ -1,3 +1,8 @@
+<?php 
+  require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
+  $pdo = obtenerConexion(); // Obtener conexion con servidor 
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -62,10 +67,7 @@
 
                 <!--Aqui se agregan los proyectos de la base de datos-->
                 <?php
-                  require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
                   try {
-                    $pdo = obtenerConexion(); // Llama a la función que devuelve la conexión
-                
                     // Realiza la consulta
                     $stmt = $pdo->query("SELECT * FROM proyectos");
                 
@@ -91,7 +93,6 @@
                       die("Error de conexión: " . $e->getMessage());
                   }
                 ?>
-
               </div>
             </div>
           </div>
