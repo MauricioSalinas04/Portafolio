@@ -83,3 +83,18 @@
               2. obtener los datos y almacenarlos en $results
               3. iniciar un ciclo foreach de todos los registros que cumplen con la id del proyecto seleccionado
               4. 
+
+
+              $.ajax({
+      url: "php/modificar.php",
+      type: "POST",
+      data: { modificar: true, inputID: idProducto },
+      success: function(response) {
+          alert(response);
+          
+      },
+      error: function() {
+          // Error al realizar la solicitud Ajax
+          alert("Error en la solicitud Ajax");
+      }
+  });

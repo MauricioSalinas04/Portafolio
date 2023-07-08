@@ -76,7 +76,7 @@
                 
                     // Muestra los resultados en HTML
                     foreach ($results as $row) {
-                      echo '<div class="col-sm-4 main-image">
+                      echo '<div class="col-sm-4 main-image data-id=" '.$row['id'].' ">
                       <div class="image-container">
                         <img src="./assets/images/'.$row['portada'].'" alt="" class="img-responsive img-size">
                       </div>
@@ -84,7 +84,7 @@
                         <h1 class="h3">' . $row['nombre'] . '</h1>
                       </div>
                       <div class="text-center mt-3">
-                        <a href="./work.php" title="" class="btn btn-default full-width">Ver más</a>
+                        <a href="./work.php?id='.$row['id'].' " title="" class="btn btn-default full-width">Ver más</a>
                       </div>
                     </div>
                     ';
@@ -116,6 +116,5 @@
       });
     </script>
     <script type="text/javascript" src="./main.70a66962.js"></script>
-
   </body>
 </html>

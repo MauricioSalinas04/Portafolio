@@ -1,6 +1,10 @@
 <?php 
   require_once(__DIR__ . '/database/conexion.php'); // Incluye el archivo de conexión
-  $pdo = obtenerConexion(); // Obtener conexion con servidor 
+  $pdo = obtenerConexion(); // Obtener conexion con servidor
+  
+  if (isset($_GET['id'])) {
+    $idProyecto = $_GET['id'];
+  }
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +64,7 @@
           <?php
             try {
               //Realizar consulta a tabla PROYECTOS
-              $stmt = $pdo->query("SELECT * FROM proyectos WHERE id = 15");                         //
+              $stmt = $pdo->query("SELECT * FROM proyectos WHERE id = $idProyecto");                         //
               $results = $stmt->fetch(PDO::FETCH_ASSOC); // Obtiene los resultados
             
               // Verifica si se encontraron resultados
@@ -90,7 +94,7 @@
               }
 
               // Realiza consulta con intermediario
-              $stmt = $pdo->query("SELECT * FROM proyectos_tecnologias WHERE proyecto_id = 15");                            //
+              $stmt = $pdo->query("SELECT * FROM proyectos_tecnologias WHERE proyecto_id = $idProyecto");                            //
               $results = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtiene los resultados
 
               echo '
@@ -140,7 +144,7 @@
               <hr>';
 
               // Realiza consulta a tabla CAPTURAS
-              $stmt = $pdo->query("SELECT ruta FROM capturas WHERE proyecto_id = 15");                            //
+              $stmt = $pdo->query("SELECT ruta FROM capturas WHERE proyecto_id = $idProyecto");                            //
               $results = $stmt->fetchAll(PDO::FETCH_ASSOC); // Obtiene los resultados
 
               if($results){
@@ -162,7 +166,7 @@
                 <?php 
                   if($repo){
                     echo 
-                    '<div class="col-xs-2 col-md-1">
+                    '<div class="col-xs-3 col-md-1">
                     <a href="'.$repo.'" target="_blank">
                     <img src="./assets/images/social.png" class="img-responsive" alt="" style="width:75%; height: auto; margin: 10px 0px;">
                     </a>
